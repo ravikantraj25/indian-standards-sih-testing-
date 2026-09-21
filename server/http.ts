@@ -124,8 +124,18 @@ export const rateLimiter = new RateLimiter(Number(process.env.RATE_LIMIT_PER_MIN
 const MAX_BODY_BYTES = 6 * 1024 * 1024; // extracted text payloads only; PDFs are parsed client-side
 
 export async function readNodeRequest(req: IncomingMessage & { body?: unknown }, apiPrefix = '/api'): Promise<ApiRequest> {
-  const url = new URL(req.url ?? '/', 'http://localhost');
-  const path = url.pathname.startsWith(apiPrefix) ? url.pathname.slice(apiPrefix.length) || '/' : url.pathname;
+  const matchedPath =
+    (req.headers['x-matched-path'] as string) ||
+    (req.headers['x-forwarded-uri'] as string) ||
+    (req.headers['x-now-route-matches'] as string) ||
+    req.url ||
+    '/';
+  const url = new URL(matchedPath, 'http://localhost');
+  let pathname = url.pathname;
+  if (pathname.endsWith('/index.ts') || pathname.endsWith('/index.js')) {
+    pathname = (url.searchParams.get('path') || pathname).replace(/\/index\.(ts|js)$/, '');
+  }
+  const path = pathname.startsWith(apiPrefix) ? pathname.slice(apiPrefix.length) || '/' : pathname;
   const query: Record<string, string> = {};
   url.searchParams.forEach((v, k) => (query[k] = v));
 
