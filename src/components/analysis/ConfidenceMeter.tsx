@@ -123,7 +123,18 @@ export function ConfidenceMeter({ c, showBreakdown = false }: { c: ConfidenceBre
   // Donut chart geometry (R=58, C=2*pi*58 = 364.4)
   const radius = 58;
   const circumference = 2 * Math.PI * radius;
-  let accumulatedOffset = 0;
+  const donutSlices = factorMetrics.map((factor, idx) => {
+    const sliceLength = (factor.pts / 100) * circumference;
+    const strokeDasharray = `${Math.max(sliceLength, 0)} ${circumference}`;
+    const offset = factorMetrics
+      .slice(0, idx)
+      .reduce((sum, f) => sum + (f.pts / 100) * circumference, 0);
+    return {
+      factor,
+      strokeDasharray,
+      strokeDashoffset: -offset,
+    };
+  });
 
   return (
     <div className="space-y-4">
@@ -319,26 +330,20 @@ export function ConfidenceMeter({ c, showBreakdown = false }: { c: ConfidenceBre
                         strokeWidth="18"
                       />
                       {/* Colored Segment Slices */}
-                      {factorMetrics.map((factor) => {
-                        const sliceLength = (factor.pts / 100) * circumference;
-                        const strokeDasharray = `${Math.max(sliceLength, 0)} ${circumference}`;
-                        const strokeDashoffset = -accumulatedOffset;
-                        accumulatedOffset += sliceLength;
-                        return (
-                          <circle
-                            key={factor.key}
-                            cx="80"
-                            cy="80"
-                            r={radius}
-                            fill="transparent"
-                            stroke={factor.color}
-                            strokeWidth="18"
-                            strokeDasharray={strokeDasharray}
-                            strokeDashoffset={strokeDashoffset}
-                            className="transition-all duration-700 hover:opacity-85"
-                          />
-                        );
-                      })}
+                      {donutSlices.map(({ factor, strokeDasharray, strokeDashoffset }) => (
+                        <circle
+                          key={factor.key}
+                          cx="80"
+                          cy="80"
+                          r={radius}
+                          fill="transparent"
+                          stroke={factor.color}
+                          strokeWidth="18"
+                          strokeDasharray={strokeDasharray}
+                          strokeDashoffset={strokeDashoffset}
+                          className="transition-all duration-700 hover:opacity-85"
+                        />
+                      ))}
                     </svg>
 
                     {/* Donut Center Label */}

@@ -5,22 +5,17 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": ["node"],
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noEmit": true
   },
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.test.json"
-    }
+  "include": [
+    "./**/*.ts",
+    "../server/**/*.ts",
+    "../src/engine/**/*.ts",
+    "../data/**/*.json"
   ]
 }

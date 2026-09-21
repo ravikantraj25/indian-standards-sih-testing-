@@ -25,7 +25,8 @@
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-router": "^7.18.4",
-    "zod": "^4.6.5"
+    "zod": "^4.6.5",
+    "@types/node": "^26.6.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

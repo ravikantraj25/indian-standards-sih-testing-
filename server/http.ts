@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from 'node:http';
+import { Buffer } from 'node:buffer';
 import { ZodError, type ZodType } from 'zod';
 
 /** Framework-agnostic request/response shapes shared by the Vite dev server and Vercel. */
