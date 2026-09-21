@@ -215,6 +215,9 @@ async function main() {
       ).error,
     );
     console.log(`  Indexed embeddings ${Math.min(i + BATCH, dataset.standards.length)}/${dataset.standards.length}`);
+    if (i + BATCH < dataset.standards.length) {
+      await new Promise((r) => setTimeout(r, 300));
+    }
   }
   console.log('Ingestion complete.');
 }
